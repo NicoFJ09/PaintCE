@@ -19,8 +19,16 @@ DARK_BLUE = (58,98,193)
 current_screen = "intro"
 buttons = []
 
-#Canvas grid
-
 #Screen constants
+#Canvas
 HEADER_HEIGHT = 60
 CANVAS_SIZE = 960
+sprite_names = ["Save", "Load", "Color"]
+
+#Menu
+menu_x_offset = -SCREEN_WIDTH
+menu_speed = 80  # Adjust this for animation speed
+BUTTON_SIZE = 40
+HOVER_SIZE = 60
+BUTTON_DISTANCE = 60
+SHIFT_AMOUNT = 5

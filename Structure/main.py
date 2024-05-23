@@ -32,6 +32,8 @@ clock = pygame.time.Clock()
 title_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",60)
 content_font = pygame.font.Font("Assets/Fonts/Roboto-Thin.ttf",20)
 icon_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",15)
+menu_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",30)
+
 #======================================================================================= ASSET IMPORTS =======================================================================================
 #Backgrounds
 Intro_background = pygame.transform.scale(pygame.image.load("Assets/Backgrounds/Paint_interface_example.png").convert_alpha(), (SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -55,6 +57,7 @@ Redo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Redo.png").conve
 #(LATERAL TOOLS)
 
 #(SETTINGS)
+Back = pygame.transform.scale(pygame.image.load("Assets/Sprites/Back.png").convert_alpha(), (50,50))
 #======================================================================================= MAIN FUNCTIONS =======================================================================================
 def handle_quit():
     # This function checks the event queue for quit events and handles them
@@ -70,7 +73,7 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen
+        global current_screen, menu_x_offset
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "intro":
@@ -83,10 +86,13 @@ def main():
             screen.fill(GRAY)
             canvas.draw_grid(screen)
             canvas.draw_canvas(screen)
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo, sprite_names)
         
         elif current_screen == "menu":
-            None
+                if menu_x_offset < 0:
+                    menu_x_offset += menu_speed
+                screen.fill(WHITE)
+                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered)
         #================================================ EVENT MANAGEMENT ================================================
 
         #Check for X pressing
@@ -115,9 +121,28 @@ def main():
                     for name, hover_rect in constants_rects.items():
                         if hover_rect.collidepoint(mouse_pos):
                             print(name)
+                            if name == "MODE":
+                                if sprite_names[2] == "Color":
+                                    sprite_names[2] = "Ascii"
+                                    print(sprite_names[2])
+                                else:
+                                    sprite_names[2] = "Color"
+                                    print(sprite_names[2])
+                            if name == "MENU":
+                                current_screen = "menu"
+                                menu_x_offset = -SCREEN_WIDTH
+            
+            #MENU SCREEN CONTROLS
+            elif current_screen == "menu":
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = event.pos
+                    if menu_rect_positions["BACK"].collidepoint(mouse_pos):
+                        current_screen = "canvas"
+                    for name, menu_rect in menu_rect_positions.items():
+                        if menu_rect.collidepoint(mouse_pos):
+                            print(name)
+                    
 
-
-        #Update
         pygame.display.update()
         clock.tick(60)
 

@@ -1,7 +1,7 @@
 import pygame
 from var_consts import *
 
-def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo):
+def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo, sprite_names):
     # Main Options
     header_rect = pygame.Rect(0, 0, SCREEN_WIDTH, HEADER_HEIGHT)
     pygame.draw.rect(screen, WHITE, header_rect)
@@ -16,8 +16,12 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Re
     
 #======================================================================================= HEADER OPTIONS DISPLAY =======================================================================================
     # Center sprites within the header with equal spacing
-    sprites = [Save, Load, Color, Ascii]
-    sprite_names = ["Save", "Load", "Color", "Ascii"]
+    # Ensure the correct sprite (Color or Ascii) is used based on the sprite_names list
+    if sprite_names[2] == "Color":
+        sprites = [Save, Load, Color]
+    else:
+        sprites = [Save, Load, Ascii]
+    
     num_sprites = len(sprites)
     sprite_size = 40
     hover_size = 60
@@ -103,7 +107,8 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Re
     rect_positions = {
         "MENU": menu_hover_rect,
         "UNDO": undo_hover_rect,
-        "REDO": redo_hover_rect
+        "REDO": redo_hover_rect,
+        "MODE": sprite_rects[sprite_names[2].lower()]  # Ensure mode rect is accessible
     }
     
     # Add hover rects for sprites to the rect_positions dictionary
