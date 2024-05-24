@@ -21,7 +21,9 @@ buttons = []
 
 #Screen constants
 #Canvas
+#Screen constants
 HEADER_HEIGHT = 60
+SUBHEADER_HEIGHT = 40
 CANVAS_SIZE = 960
 sprite_names = ["Save", "Load", "Color"]
 

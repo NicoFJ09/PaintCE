@@ -33,7 +33,6 @@ title_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",60)
 content_font = pygame.font.Font("Assets/Fonts/Roboto-Thin.ttf",20)
 icon_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",15)
 menu_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",30)
-
 #======================================================================================= ASSET IMPORTS =======================================================================================
 #Backgrounds
 Intro_background = pygame.transform.scale(pygame.image.load("Assets/Backgrounds/Paint_interface_example.png").convert_alpha(), (SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -53,8 +52,25 @@ Ascii = pygame.transform.scale(pygame.image.load("Assets/Sprites/ASCII_mode.png"
 Undo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Undo.png").convert_alpha(), (40,40))
 Redo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Redo.png").convert_alpha(), (40,40))
 #(SUBHEADER)
-
+Select = pygame.transform.scale(pygame.image.load("Assets/Sprites/Select.png").convert_alpha(), (40,40))
+Zoom_in = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_in.png").convert_alpha(), (40,40))
+Zoom_out = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_out.png").convert_alpha(), (40,40))
+Draw = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit.png").convert_alpha(), (45,45))
+Eraser = pygame.transform.scale(pygame.image.load("Assets/Sprites/Eraser.png").convert_alpha(), (45,45))
+Size = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size.png").convert_alpha(), (40,40))
+Inverter = pygame.transform.scale(pygame.image.load("Assets/Sprites/inverter.png").convert_alpha(), (45,45))
+high_contrast = pygame.transform.scale(pygame.image.load("Assets/Sprites/high_contrast.png").convert_alpha(), (45,45))
 #(LATERAL TOOLS)
+black_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/black_icon.png"), (45,45))
+white_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/white_icon.png"), (45,45))
+red_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/red_icon.png"), (45,45))
+green_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/green_icon.png"), (45,45))
+blue_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/blue_icon.png"), (45,45))
+yellow_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/yellow_icon.png"), (45,45))
+orange_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/orange_icon.png"), (45,45))
+fucsia_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/fucsia_icon.png"), (45,45))
+cyan_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/cyan_icon.png"), (45,45))
+purple_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/purple_icon.png"), (45,45))
 
 #(SETTINGS)
 Back = pygame.transform.scale(pygame.image.load("Assets/Sprites/Back.png").convert_alpha(), (50,50))
@@ -86,7 +102,7 @@ def main():
             screen.fill(GRAY)
             canvas.draw_grid(screen)
             canvas.draw_canvas(screen)
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo, sprite_names)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Size, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon)
         
         elif current_screen == "menu":
                 if menu_x_offset < 0:
