@@ -89,7 +89,7 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset
+        global current_screen, menu_x_offset, last_pressed
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "intro":
@@ -108,7 +108,7 @@ def main():
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
                 screen.fill(WHITE)
-                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered)
+                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, last_pressed)
         #================================================ EVENT MANAGEMENT ================================================
 
         #Check for X pressing
@@ -117,7 +117,8 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            #INTRO SCREEN CONTROLS
+
+            # INTRO SCREEN CONTROLS
             elif current_screen == "intro":
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
@@ -125,17 +126,20 @@ def main():
                         if button.collidepoint(mouse_pos):
                             if buttons.index(button) == 0:
                                 current_screen = "canvas"
+                                last_pressed = "NEW"
                                 print("NEW")
                             elif buttons.index(button) == 1:
                                 current_screen = "menu"
+                                last_pressed = "OPEN"
                                 print("OPEN")
             
-            #CANVAS SCREEN CONTROLS
+            # CANVAS SCREEN CONTROLS
             elif current_screen == "canvas":
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
                     for name, hover_rect in constants_rects.items():
                         if hover_rect.collidepoint(mouse_pos):
+                            last_pressed = name
                             print(name)
                             if name == "MODE":
                                 if sprite_names[2] == "Color":
@@ -148,15 +152,18 @@ def main():
                                 current_screen = "menu"
                                 menu_x_offset = -SCREEN_WIDTH
             
-            #MENU SCREEN CONTROLS
+            # MENU SCREEN CONTROLS
             elif current_screen == "menu":
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
                     if menu_rect_positions["BACK"].collidepoint(mouse_pos):
                         current_screen = "canvas"
+                        last_pressed = "BACK"
                     for name, menu_rect in menu_rect_positions.items():
                         if menu_rect.collidepoint(mouse_pos):
+                            last_pressed = name
                             print(name)
+    
                     
 
         pygame.display.update()
