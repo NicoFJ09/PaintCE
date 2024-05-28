@@ -32,6 +32,6 @@ menu_x_offset = -SCREEN_WIDTH
 menu_speed = 80  # Adjust this for animation speed
 BUTTON_SIZE = 40
 HOVER_SIZE = 60
-BUTTON_DISTANCE = 60
+BUTTON_DISTANCE = 128
 SHIFT_AMOUNT = 5
 last_pressed = ""

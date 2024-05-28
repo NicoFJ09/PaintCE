@@ -55,11 +55,7 @@ Redo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Redo.png").conve
 Select = pygame.transform.scale(pygame.image.load("Assets/Sprites/Select.png").convert_alpha(), (40,40))
 Zoom_in = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_in.png").convert_alpha(), (40,40))
 Zoom_out = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_out.png").convert_alpha(), (40,40))
-Draw = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit.png").convert_alpha(), (45,45))
-Eraser = pygame.transform.scale(pygame.image.load("Assets/Sprites/Eraser.png").convert_alpha(), (45,45))
-Size = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size.png").convert_alpha(), (40,40))
-Inverter = pygame.transform.scale(pygame.image.load("Assets/Sprites/inverter.png").convert_alpha(), (45,45))
-high_contrast = pygame.transform.scale(pygame.image.load("Assets/Sprites/high_contrast.png").convert_alpha(), (45,45))
+
 #(LATERAL TOOLS)
 black_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/black_icon.png"), (45,45))
 white_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/white_icon.png"), (45,45))
@@ -71,9 +67,19 @@ orange_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/orange_ic
 fucsia_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/fucsia_icon.png"), (45,45))
 cyan_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/cyan_icon.png"), (45,45))
 purple_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/purple_icon.png"), (45,45))
-
+Draw = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit.png").convert_alpha(), (45,45))
+Eraser = pygame.transform.scale(pygame.image.load("Assets/Sprites/Eraser.png").convert_alpha(), (45,45))
+Inverter = pygame.transform.scale(pygame.image.load("Assets/Sprites/inverter.png").convert_alpha(), (45,45))
+high_contrast = pygame.transform.scale(pygame.image.load("Assets/Sprites/high_contrast.png").convert_alpha(), (45,45))
+Rotate_left = pygame.transform.scale(pygame.image.load("Assets/Sprites/Rotate_left.png").convert_alpha(), (45,45))
+Rotate_right = pygame.transform.scale(pygame.image.load("Assets/Sprites/Rotate_right.png").convert_alpha(), (45,45))
+Flip_horizontal = pygame.transform.scale(pygame.image.load("Assets/Sprites/Flip_horizontal.png").convert_alpha(), (45,45))
+Flip_vertical = pygame.transform.scale(pygame.image.load("Assets/Sprites/Flip_vertical.png").convert_alpha(), (45,45))
 #(SETTINGS)
 Back = pygame.transform.scale(pygame.image.load("Assets/Sprites/Back.png").convert_alpha(), (50,50))
+Edit = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit.png").convert_alpha(), (50,50))
+See_image = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_image.png").convert_alpha(), (50,50))
+See_matrix =pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix.png").convert_alpha(), (50,50))
 #======================================================================================= MAIN FUNCTIONS =======================================================================================
 def handle_quit():
     # This function checks the event queue for quit events and handles them
@@ -102,13 +108,13 @@ def main():
             screen.fill(GRAY)
             canvas.draw_grid(screen)
             canvas.draw_canvas(screen)
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Size, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon)
         
         elif current_screen == "menu":
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
                 screen.fill(WHITE)
-                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, last_pressed)
+                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, Edit, See_image, See_matrix, last_pressed)
         #================================================ EVENT MANAGEMENT ================================================
 
         #Check for X pressing

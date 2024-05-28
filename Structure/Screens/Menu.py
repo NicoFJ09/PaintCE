@@ -1,7 +1,7 @@
 import pygame
 from var_consts import *
 
-def Menu_screen(screen, x_offset, menu_font, Back, New, Open, last_pressed):
+def Menu_screen(screen, x_offset, menu_font, Back, New, Open, Edit, See_image, See_matrix, last_pressed):
     menu_rect = pygame.Rect(x_offset, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
     pygame.draw.rect(screen, LIGHT_GRAY, menu_rect)
     
@@ -32,8 +32,9 @@ def Menu_screen(screen, x_offset, menu_font, Back, New, Open, last_pressed):
 
     # Conditional rendering based on the last button pressed
     button_data_conditional = {
-        "CONDITIONAL1": {"text": "CONDITIONAL1", "active": False},
-        "CONDITIONAL2": {"text": "CONDITIONAL2", "active": False}
+        "EDIT": {"text": "EDIT", "image": Edit},
+        "SEE IMAGE": {"text": "SEE IMAGE", "image": See_image},
+        "SEE MATRIX" : {"text": "SEE MATRIX", "image": See_matrix}
     }
 
     for button_name, button_info in button_data_conditional.items():
@@ -45,6 +46,7 @@ def Menu_screen(screen, x_offset, menu_font, Back, New, Open, last_pressed):
         if hover_rect.collidepoint(pygame.mouse.get_pos()) and last_pressed == "OPEN":
             pygame.draw.rect(screen, WHITE, hover_rect)
         
+        screen.blit(button_info["image"], button_rect.topleft)
         screen.blit(text_render, text_rect)
         
         hover_rects[button_name] = hover_rect
