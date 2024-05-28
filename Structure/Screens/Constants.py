@@ -1,7 +1,7 @@
 import pygame
 from var_consts import *
 
-def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_In, Zoom_Out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon):
+def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_In, Zoom_Out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, current_color, selected_function):
     # Main Options
     header_rect = pygame.Rect(0, 0, SCREEN_WIDTH, HEADER_HEIGHT)
     pygame.draw.rect(screen, WHITE, header_rect)
@@ -65,8 +65,8 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
         screen.blit(sprite, (x_pos, y_pos))
         
         # Store sprite and hover rect positions
-        sprite_rects[name.lower()] = pygame.Rect(x_pos, y_pos, sprite_size, sprite_size)
-        hover_rects[name.lower()] = hover_rect
+        sprite_rects[name] = pygame.Rect(x_pos, y_pos, sprite_size, sprite_size)
+        hover_rects[name] = hover_rect
         
         # Render text surfaces
         text_surface = icon_font.render(name, True, GRAY)
@@ -133,8 +133,8 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
         screen.blit(subheader_text_surface, subheader_text_rect)
         
         # Store sprite and hover rect positions for subheader
-        sprite_rects[name.lower()] = pygame.Rect(subheader_x_pos, subheader_y_pos, subheader_sprite_size, subheader_sprite_size)
-        hover_rects[name.lower()] = subheader_hover_rect
+        sprite_rects[name] = pygame.Rect(subheader_x_pos, subheader_y_pos, subheader_sprite_size, subheader_sprite_size)
+        hover_rects[name] = subheader_hover_rect
 
         subheader_x_pos += subheader_sprite_size + subheader_spacing_between_sprites
 
@@ -142,9 +142,9 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
     
                                                 #======================================= FIRST TOOLS OPTIONS DISPLAY =======================================
     
-    vertical_buttons = [Eraser, black_icon, white_icon, red_icon, green_icon, blue_icon, Inverter, Rotate_left, Flip_horizontal]
+    vertical_buttons = [Eraser, black_icon, red_icon, fucsia_icon, purple_icon, blue_icon, Inverter, Rotate_left, Flip_horizontal]
     vertical_button_names = ["Eraser", "", "", "", "", "", "Inverter", "Rotate L.", "Flip h."]
-    vertical_button_variables = ["Eraser", "Black", "White", "Red", "Green", "Blue", "Inverter", "Rotate L.", "Flip h."]
+    vertical_button_variables = ["Eraser", "Black", "Red","Fucsia" , "Purple", "Blue", "Inverter", "Rotate L.", "Flip h."]
     button_size = 30
     hover_size = 60
     vertical_margin = 15  # Espacio entre los botones
@@ -168,13 +168,13 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
         screen.blit(text_surface, text_rect)
         
         # Store sprite and hover rect positions
-        sprite_rects[var.lower()] = pygame.Rect(vertical_x_pos, vertical_y_pos, button_size, button_size)
-        hover_rects[var.lower()] = hover_rect
+        sprite_rects[var] = pygame.Rect(vertical_x_pos, vertical_y_pos, button_size, button_size)
+        hover_rects[var] = hover_rect
 
     #======================================= SECOND TOOLS OPTIONS DISPLAY =======================================
-    vertical_buttons = [Draw, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, high_contrast, Rotate_right, Flip_vertical]
+    vertical_buttons = [Draw, white_icon, cyan_icon, green_icon, yellow_icon, orange_icon, high_contrast, Rotate_right, Flip_vertical]
     vertical_button_names = ["Draw", "", "", "", "", "", "Contrast", "Rotate R.", "Flip v."]
-    vertical_button_variables = ["Draw", "Yellow", "Orange", "Fucsia", "Cyan", "Purple", "Contrast", "Rotate R.", "Flip v."]
+    vertical_button_variables = ["Draw", "White", "Cyan", "Green", "Yellow", "Orange", "Contrast", "Rotate R.", "Flip v."]
     button_size = 30
     hover_size = 60
     vertical_margin = 15  # Espacio entre los botones
@@ -198,20 +198,20 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
         screen.blit(text_surface, text_rect)
         
         # Store sprite and hover rect positions
-        sprite_rects[var.lower()] = pygame.Rect(vertical_x_pos, vertical_y_pos, button_size, button_size)
-        hover_rects[var.lower()] = hover_rect
+        sprite_rects[var] = pygame.Rect(vertical_x_pos, vertical_y_pos, button_size, button_size)
+        hover_rects[var] = hover_rect
 
     #======================================================================================= RECT RETURN MANAGEMENT =======================================================================================
     # Store the rect positions for all items
     rect_positions = {
-        "MENU": menu_hover_rect,
-        "UNDO": undo_hover_rect,
-        "REDO": redo_hover_rect,
-        "MODE": sprite_rects[sprite_names[2].lower()]
+        "Menu": menu_hover_rect,
+        "Undo": undo_hover_rect,
+        "Redo": redo_hover_rect,
+        "Mode": sprite_rects[sprite_names[2]]
     }
     
     # Add hover rects for sprites to the rect_positions dictionary
     for name, hover_rect in hover_rects.items():
-        rect_positions[name.upper()] = hover_rect
+        rect_positions[name] = hover_rect
 
     return rect_positions
