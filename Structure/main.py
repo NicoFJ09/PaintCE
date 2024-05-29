@@ -98,7 +98,7 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_function
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "INTRO":
@@ -144,6 +144,7 @@ def main():
             
             # CANVAS SCREEN CONTROLS
             elif current_screen == "CANVAS":
+                
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = event.pos
                     for name, hover_rect in constants_rects.items():
@@ -164,9 +165,11 @@ def main():
                             elif name in colors:
                                 current_color = name
                                 print("current_color: ", current_color)
+                            elif name in selectable_functions:
+                                selected_function = name
             
             # MENU SCREEN CONTROLS
-            elif current_screen == "menu":
+            elif current_screen == "MENU":
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = event.pos
                     if menu_rect_positions["Back"].collidepoint(mouse_pos):

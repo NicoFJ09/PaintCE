@@ -49,6 +49,7 @@ colors = {
     "Yellow": (255, 255, 0),
     "Orange": (255, 128, 0)
 }
-current_color = "Black"
+current_color = ""
 
 selected_function = ""
+selectable_functions = ["Select", "Eraser", "Draw"]
