@@ -7,6 +7,17 @@ def Menu_screen(screen, x_offset, menu_font, Back, New, Open, Edit, See_image, S
     
     hover_rects = {}
 
+    # Define the left and right section rectangles
+    left_section_width = (SCREEN_WIDTH - x_offset) // 5
+    right_section_width = SCREEN_WIDTH - left_section_width
+    left_section_rect = pygame.Rect(x_offset, 0, left_section_width, SCREEN_HEIGHT)
+    right_section_rect = pygame.Rect(x_offset + left_section_width, 0, right_section_width, SCREEN_HEIGHT)
+
+    # Draw the left and right section rectangles (for visualization, you can remove these lines later)
+    pygame.draw.rect(screen, LIGHT_GRAY, left_section_rect)  # Light gray for left section
+    pygame.draw.rect(screen, GRAY, right_section_rect)  # Slightly darker gray for right section
+
+
     y_pos = (HEADER_HEIGHT - BUTTON_SIZE) // 2 - 5
     button_data = {
         "Back": {"text": "Back", "image": Back},

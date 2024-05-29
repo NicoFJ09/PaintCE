@@ -38,11 +38,13 @@ menu_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",30)
 Intro_background = pygame.transform.scale(pygame.image.load("Assets/Backgrounds/Paint_interface_example.png").convert_alpha(), (SCREEN_WIDTH,SCREEN_HEIGHT))
 
 #Sprites
+
 #(INTRO)
 New_file = pygame.transform.scale(pygame.image.load("Assets/Sprites/New_file_blue.png").convert_alpha(), (48,48))
 Open_file = pygame.transform.scale(pygame.image.load("Assets/Sprites/Open_file_blue.png").convert_alpha(), (48,48))
 New_file_hovered = pygame.transform.scale(pygame.image.load("Assets/Sprites/New_file.png").convert_alpha(), (48,48))
 Open_file_hovered = pygame.transform.scale(pygame.image.load("Assets/Sprites/Open_file.png").convert_alpha(), (48,48))
+
 #(HEADER)
 Menu = pygame.transform.scale(pygame.image.load("Assets/Sprites/Menu.png").convert_alpha(), (40,40))
 Save = pygame.transform.scale(pygame.image.load("Assets/Sprites/Save.png").convert_alpha(), (40,40))
@@ -55,6 +57,7 @@ Redo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Redo.png").conve
 Select = pygame.transform.scale(pygame.image.load("Assets/Sprites/Select.png").convert_alpha(), (40,40))
 Zoom_in = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_in.png").convert_alpha(), (40,40))
 Zoom_out = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_out.png").convert_alpha(), (40,40))
+Size = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size.png").convert_alpha(), (40,40))
 
 #(LATERAL TOOLS)
 black_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/black_icon.png"), (45,45))
@@ -75,6 +78,7 @@ Rotate_left = pygame.transform.scale(pygame.image.load("Assets/Sprites/Rotate_le
 Rotate_right = pygame.transform.scale(pygame.image.load("Assets/Sprites/Rotate_right.png").convert_alpha(), (45,45))
 Flip_horizontal = pygame.transform.scale(pygame.image.load("Assets/Sprites/Flip_horizontal.png").convert_alpha(), (45,45))
 Flip_vertical = pygame.transform.scale(pygame.image.load("Assets/Sprites/Flip_vertical.png").convert_alpha(), (45,45))
+
 #(SETTINGS)
 Back = pygame.transform.scale(pygame.image.load("Assets/Sprites/Back.png").convert_alpha(), (50,50))
 Edit = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit.png").convert_alpha(), (50,50))
@@ -82,7 +86,10 @@ See_image = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_image.p
 See_matrix =pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix.png").convert_alpha(), (50,50))
 Edit_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit_unselected.png").convert_alpha(), (50,50))
 See_image_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_image_unselected.png").convert_alpha(), (50,50))
-See_matrix_unselected =pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix_unselected.png").convert_alpha(), (50,50))
+See_matrix_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix_unselected.png").convert_alpha(), (50,50))
+Scrollbar = pygame.transform.scale(pygame.image.load("Assets/Sprites/Scrollbar.png").convert_alpha(), (50,50))
+Scrollbar_pointer = pygame.transform.scale(pygame.image.load("Assets/Sprites/Scrollbar_pointer.png").convert_alpha(), (50,50))
+
 #======================================================================================= MAIN FUNCTIONS =======================================================================================
 def handle_quit():
     # This function checks the event queue for quit events and handles them
@@ -98,20 +105,18 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_function
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, mouse_held
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "INTRO":
             screen.fill(GRAY)
-            canvas.draw_grid(screen)
-            canvas.draw_canvas(screen)
+            canvas.draw_canvas(screen, display_option)
             buttons = Intro_screen(screen, title_font, content_font,  New_file, Open_file, New_file_hovered, Open_file_hovered)
         
         elif current_screen == "CANVAS":
             screen.fill(GRAY)
-            canvas.draw_grid(screen)
-            canvas.draw_canvas(screen)
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, selected_function, current_color)
+            canvas.draw_canvas(screen, display_option)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, selected_action, display_option, current_color)
         
         elif current_screen == "MENU":
                 if menu_x_offset < 0:
@@ -133,10 +138,12 @@ def main():
                     mouse_pos = event.pos
                     for button in buttons:
                         if button.collidepoint(mouse_pos):
+                            #Screen change management
                             if buttons.index(button) == 0:
                                 current_screen = "CANVAS"
                                 last_pressed = "New"
                                 print("New")
+
                             elif buttons.index(button) == 1:
                                 current_screen = "MENU"
                                 last_pressed = "Open"
@@ -144,14 +151,14 @@ def main():
             
             # CANVAS SCREEN CONTROLS
             elif current_screen == "CANVAS":
-                
+                #Click detection
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = event.pos
                     for name, hover_rect in constants_rects.items():
                         if hover_rect.collidepoint(mouse_pos):
                             last_pressed = name
                             print(name)
-                            
+                            #Display mode toggle
                             if name == "Mode":
                                 if sprite_names[2] == "Color":
                                     sprite_names[2] = "Ascii"
@@ -159,22 +166,47 @@ def main():
                                 else:
                                     sprite_names[2] = "Color"
                                     print(sprite_names[2])
+                            #Screen change management
                             elif name == "Menu":
                                 current_screen = "MENU"
                                 menu_x_offset = -SCREEN_WIDTH
+                            elif name == "Save":
+                                canvas.save_to_file('canvas_data.txt')
+                            #Save selected color
                             elif name in colors:
                                 current_color = name
-                                print("current_color: ", current_color)
-                            elif name in selectable_functions:
-                                selected_function = name
-            
+                            #Save selected action
+                            elif name in selectable_actions:
+                                selected_action = name
+                            #Toggle display options
+                            elif name in display_options:
+                                
+                                if display_option == name:
+                                    display_option = ""
+                                else:
+                                    display_option = name
+
+                    #Draw condition
+                    if selected_action != "":
+                        mouse_held = True
+                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                    mouse_held = False
+                elif event.type == pygame.MOUSEMOTION:
+                    mouse_pos = event.pos
+                    if mouse_held:
+                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
+
             # MENU SCREEN CONTROLS
             elif current_screen == "MENU":
+                #Click detection
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = event.pos
+                    #Screen change management
                     if menu_rect_positions["Back"].collidepoint(mouse_pos):
                         current_screen = "CANVAS"
                         last_pressed = "Back"
+                    #Image manipulation logic
                     for name, menu_rect in menu_rect_positions.items():
                         if menu_rect.collidepoint(mouse_pos):
                             last_pressed = name
