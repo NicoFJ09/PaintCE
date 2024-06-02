@@ -2,7 +2,6 @@
 import pygame
 import sys
 sys.path.append('../')
-import os
 from var_consts import *
 
 #======================================================================================= SCREEN IMPORTS =======================================================================================
@@ -14,13 +13,25 @@ from Screens.Canvas import Canvas_screen
 
 from Screens.Constants import Constants_screen
 
+from Screens.Save import Save_screen
+
+from Screens.Save import Replace_screen
+
+from Screens.Confirmation import Confirmation_screen
+
+
+
 #======================================================================================= GAME SETUP =======================================================================================
 #Library initialization
 pygame.init()
 
 # Window setup
-FILE_STATE="Untitled"
-pygame.display.set_caption(f"{FILE_STATE} - {TITLE}")
+def update_caption():
+  global CURRENT_FILE  # Access the global variable
+  pygame.display.set_caption(f"{CURRENT_FILE} - {TITLE}")
+# Set initial caption
+update_caption()
+
 LOGO = pygame.image.load('Assets/Sprites/Logo.png')
 pygame.display.set_icon(LOGO)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -30,10 +41,11 @@ clock = pygame.time.Clock()
 
 # Font setup
 title_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",60)
+subtitle_font = pygame.font.Font("Assets/Fonts/Roboto-Regular.ttf",30)
 content_font = pygame.font.Font("Assets/Fonts/Roboto-Thin.ttf",20)
 icon_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",15)
 menu_font = pygame.font.Font("Assets/Fonts/Roboto-Light.ttf",30)
-#======================================================================================= ASSET IMPORTS =======================================================================================
+#==============================================a========================================= ASSET IMPORTS =======================================================================================
 #Backgrounds
 Intro_background = pygame.transform.scale(pygame.image.load("Assets/Backgrounds/Paint_interface_example.png").convert_alpha(), (SCREEN_WIDTH,SCREEN_HEIGHT))
 
@@ -81,29 +93,7 @@ equal_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/equal_icon
 ampersand_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/ampersand_icon.png"), (45,45))
 dot_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/dot_icon.png"), (45,45))
 dollar_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/dollar_icon.png"), (45,45))
-"""
-    0 : " ",
-    1 : ".",
-    2 : ":",
-    3 : "-",
-    4 : "=",
-    5 : "¡",
-    6 : "&",
-    7 : "$",
-    8 : "%",
-    9 : "@"
 
-    "White": 0,
-    "Cyan" : 1,
-    "Green" : 2,
-    "Yellow" : 3,
-    "Orange" : 4,
-    "Red" : 5,
-    "Fucsia" : 6,
-    "Purple": 7,
-    "Blue" : 8,
-    "Black" : 9
-"""
 Draw = pygame.transform.scale(pygame.image.load("Assets/Sprites/Draw.png").convert_alpha(), (45,45))
 Eraser = pygame.transform.scale(pygame.image.load("Assets/Sprites/Eraser.png").convert_alpha(), (45,45))
 Inverter = pygame.transform.scale(pygame.image.load("Assets/Sprites/inverter.png").convert_alpha(), (45,45))
@@ -139,28 +129,43 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved 
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE
         #================================================ SCREEN DISPLAYS ================================================
         
+        #DISPLAY INTRO OPTIONS 
         if current_screen == "INTRO":
             screen.fill(GRAY)
             canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             buttons = Intro_screen(screen, title_font, content_font,  New_file, Open_file, New_file_hovered, Open_file_hovered)
         
+        #DISPLAY CANVAS AND CONSTANTS
         elif current_screen == "CANVAS":
+            response = ""
             screen.fill(GRAY)
             canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
             #Draw my mouse
             canvas.draw_outline(screen, mouse_pos, current_size)
-
+        
+        #DISPLAY MENU OPTIONS
         elif current_screen == "MENU":
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
                 screen.fill(WHITE)
                 menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, Edit, See_image, See_matrix, Edit_unselected, See_image_unselected, See_matrix_unselected, last_pressed)
+       
+        #DISPLAY FILE SAVE
+        elif current_screen == "SAVE":
+            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
+            orientation_option = ""
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
+            if response == "File name already exists. Do you want to overwrite it?":
+                cancel_button_rect, save_button_rect = Replace_screen(screen, subtitle_font, content_font)
+            else:
+                input_rect, cancel_button_rect, save_button_rect = Save_screen(screen, title_font, content_font, input_text, input_active)
+        
         #================================================ EVENT MANAGEMENT ================================================
 
         #Check for X pressing
@@ -213,8 +218,14 @@ def main():
                                 current_screen = "MENU"
                                 menu_x_offset = -SCREEN_WIDTH
 
+                            #SAVE FILE MANAGEMENT
                             elif name == "Save":
-                                canvas.save_to_file('canvas_data.txt')
+                                #Check if file is untitled
+                                if CURRENT_FILE == "Untitled":
+                                    #Switch to save screen (name input)
+                                    current_screen = "SAVE"
+                                else:
+                                    canvas.resave_to_file("Paintings", CURRENT_FILE + ".txt")
                                 
                             elif name == "Undo":
                                 canvas.undo()
@@ -285,7 +296,64 @@ def main():
                             last_pressed = name
                             print(name)
     
-                    
+            # SAVE SCREEN CONTROLS
+            elif current_screen == "SAVE":
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = event.pos
+                    if response == "File name already exists. Do you want to overwrite it?":
+                            if cancel_button_rect.collidepoint(event.pos):
+                                print("Cancelled")
+                                input_text = ""
+                                current_screen = "CANVAS"
+                                save_option = ""
+                            #Check if saving file
+                            elif save_button_rect.collidepoint(event.pos):
+                                save_option_replace = "Save"
+
+                    else:
+                            #Check if start writing
+                            if input_rect.collidepoint(event.pos):
+                                input_active = True
+                            else:
+                                input_active = False
+                            
+                            #Check if cancelled
+                            if cancel_button_rect.collidepoint(event.pos):
+                                print("Cancelled")
+                                input_text = ""
+                                current_screen = "CANVAS"
+                                save_option = ""
+                                response = ""
+                            #Check if saving file
+                            elif save_button_rect.collidepoint(event.pos):
+                                save_option = "Save"
+                                print("saved")
+                                
+                    #Check for input text
+                elif event.type == pygame.KEYDOWN and input_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        input_text = input_text[:-1]
+                    else:
+                        input_text += event.unicode
+
+                if save_option == "Save":
+                    canvas_name = input_text
+                    response = canvas.save_new_to_file("Paintings", canvas_name + ".txt")
+                    if response == "File name already exists. Do you want to overwrite it?":
+                        if save_option_replace == "Save":
+                            canvas.resave_to_file("Paintings", canvas_name + ".txt")
+                            current_screen = "CANVAS"
+                            CURRENT_FILE = canvas_name
+                            update_caption()
+                        else:
+                            CURRENT_FILE = "Untitled"
+                            update_caption()
+                    else:
+                        CURRENT_FILE = canvas_name
+                        update_caption()
+                        current_screen = "CANVAS"
+                else:
+                    pass
 
         pygame.display.update()
         clock.tick(60)

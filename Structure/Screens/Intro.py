@@ -6,7 +6,7 @@ def Intro_screen(screen, title_font, content_font, New_file_sprite, Open_file_sp
     # Background gray coating
     overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
 
-    overlay.fill(OVERLAY_GRAY)
+    overlay.fill(OVERLAY_DARK)
     screen.blit(overlay, (0, 0))
 
     # Render welcome text

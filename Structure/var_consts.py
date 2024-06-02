@@ -12,7 +12,8 @@ BLACK = (0,0,0)
 GRAY = (125,125,125)
 LIGHT_GRAY = (200,200,200)
 DARK_GRAY = (50,50,50)
-OVERLAY_GRAY = (0,0,0,225)
+OVERLAY_DARK = (0,0,0,225)
+OVERLAY_GRAY = (128, 128, 128, 128)
 DARK_BLUE = (58,98,193)
 RED = (255, 0, 0)
 FUCSIA = (255, 0, 128)
@@ -181,6 +182,7 @@ display_mode = "Color"
 
 #Brush/eraser size
 current_size = 1
+
 #Menu constants
 menu_x_offset = -SCREEN_WIDTH
 menu_speed = 80  # Adjust this for animation speed
@@ -189,6 +191,11 @@ HOVER_SIZE = 60
 BUTTON_DISTANCE = 128
 SHIFT_AMOUNT = 5
 
-
-
-
+#Save management
+CURRENT_FILE = "Untitled"
+input_text = ""
+save_option = ""
+save_option_replace = ""
+canvas_name = ""
+response = ""
+input_active = False

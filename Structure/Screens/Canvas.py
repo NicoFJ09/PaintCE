@@ -1,5 +1,6 @@
 import pygame
 from var_consts import *
+import os
 
 class Canvas_screen:
     def __init__(self):
@@ -146,7 +147,24 @@ class Canvas_screen:
         return matrix[::-1]
 
 
-    def save_to_file(self, filename):
-        with open(filename, 'w') as f:
+    def save_new_to_file(self, directory, filename):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        file_path = os.path.join(directory, filename)
+        
+        if os.path.exists(file_path):
+            return "File name already exists. Do you want to overwrite it?"
+
+        with open(file_path, 'w') as f:
+            for row in self.canvas_matrix:
+                f.write(' '.join(map(str, row)) + '\n')
+        return "Successfully saved file"
+
+    def resave_to_file(self, directory, filename):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        file_path = os.path.join(directory, filename)
+
+        with open(file_path, 'w') as f:
             for row in self.canvas_matrix:
                 f.write(' '.join(map(str, row)) + '\n')
