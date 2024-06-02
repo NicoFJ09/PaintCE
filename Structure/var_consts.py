@@ -114,10 +114,12 @@ selected_action = ""
 selectable_actions = ["Select", "Eraser", "Draw"]
 display_option = ""
 display_options =  ["Contrast", "Inverter"]
-
+orientation_option = ""
+orientation_options = ["Rotate L.", "Rotate R.",  "Flip h.",  "Flip v."]
 
 last_pressed = ""
 mouse_held = False
+state_saved = False
 
 #Screen constants
 HEADER_HEIGHT = 60

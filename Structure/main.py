@@ -105,17 +105,19 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, mouse_held
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option, mouse_held, state_saved 
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "INTRO":
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option)
+            canvas.draw_canvas(screen, display_option, orientation_option)
+            orientation_option = ""
             buttons = Intro_screen(screen, title_font, content_font,  New_file, Open_file, New_file_hovered, Open_file_hovered)
         
         elif current_screen == "CANVAS":
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option)
+            canvas.draw_canvas(screen, display_option, orientation_option)
+            orientation_option = ""
             constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, selected_action, display_option, current_color)
         
         elif current_screen == "MENU":
@@ -153,11 +155,13 @@ def main():
             elif current_screen == "CANVAS":
                 #Click detection
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    
                     mouse_pos = event.pos
                     for name, hover_rect in constants_rects.items():
                         if hover_rect.collidepoint(mouse_pos):
                             last_pressed = name
                             print(name)
+
                             #Display mode toggle
                             if name == "Mode":
                                 if sprite_names[2] == "Color":
@@ -166,18 +170,28 @@ def main():
                                 else:
                                     sprite_names[2] = "Color"
                                     print(sprite_names[2])
-                            #Screen change management
+
+                            #Screen history management
                             elif name == "Menu":
                                 current_screen = "MENU"
                                 menu_x_offset = -SCREEN_WIDTH
+
                             elif name == "Save":
                                 canvas.save_to_file('canvas_data.txt')
+                                
+                            elif name == "Undo":
+                                canvas.undo()
+                            elif name == "Redo":
+                                canvas.redo()
+
                             #Save selected color
                             elif name in colors:
                                 current_color = name
+
                             #Save selected action
                             elif name in selectable_actions:
                                 selected_action = name
+
                             #Toggle display options
                             elif name in display_options:
                                 
@@ -186,15 +200,29 @@ def main():
                                 else:
                                     display_option = name
 
+                            #Change screen orientation
+                            elif name in orientation_options:
+                                orientation_option = name
+
                     #Draw condition
                     if selected_action != "":
                         mouse_held = True
                         canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
+
+
+
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     mouse_held = False
+                    # Save the final state when the mouse is released
+                    if state_saved:
+                        canvas.save_state()
+                        state_saved = False
+                        
+
                 elif event.type == pygame.MOUSEMOTION:
                     mouse_pos = event.pos
                     if mouse_held:
+                        state_saved = True
                         canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
 
             # MENU SCREEN CONTROLS
