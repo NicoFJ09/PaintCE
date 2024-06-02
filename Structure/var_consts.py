@@ -95,7 +95,7 @@ Draw_color_reading = {
 }
 
 #Ascii art converter
-ascii_codes = {
+Ascii_codes = {
     0 : " ",
     1 : ".",
     2 : ":",
@@ -104,30 +104,84 @@ ascii_codes = {
     5 : "¡",
     6 : "&",
     7 : "$",
-    8 : "% ",
+    8 : "%",
     9 : "@"
 }
 
+#Monochrome switch
+Ascii_High_contrast_codes = {
+    0 : " ",
+    1 : " ",
+    2 : " ",
+    3 : " ",
+    4 : " ",
+    5 : "@",
+    6 : "@",
+    7 : "@",
+    8 : "@",
+    9 : "@"
+}
+#Negative colors
+Ascii_Inverter_codes = {
+    0 : "@",
+    1 : "%",
+    2 : "$",
+    3 : "&",
+    4 : "¡",
+    5 : "=",
+    6 : "-",
+    7 : ":",
+    8 : ".",
+    9 : " ",
+}
+
+Draw_ascii_reading = {
+    " ": 0,
+    "." : 1,
+    ":" : 2,
+    "-" : 3,
+    "=" : 4,
+    "¡" : 5,
+    "&" : 6,
+    "$": 7,
+    "%" : 8,
+    "@" : 9
+}
+
+#Selected color
 current_color = ""
 
+#Select, erase, or draw
 selected_action = ""
 selectable_actions = ["Select", "Eraser", "Draw"]
+
+#Contrast or invert
 display_option = ""
 display_options =  ["Contrast", "Inverter"]
+
+#Rotate or flip
 orientation_option = ""
 orientation_options = ["Rotate L.", "Rotate R.",  "Flip h.",  "Flip v."]
 
+#Last pressed option
 last_pressed = ""
+#To handle drawing/erasing while holding
 mouse_held = False
+#To handle state saving to undo and redo
 state_saved = False
 
 #Screen constants
 HEADER_HEIGHT = 60
 SUBHEADER_HEIGHT = 40
 CANVAS_SIZE = 960
-sprite_names = ["Save", "Load", "Color"]
 
-#Menu
+#To handle the color to Ascii toggle mostly
+sprite_names = ["Save", "Load", "Color"]
+display_mode = "Color"
+
+#Brush/eraser size
+current_size = 1
+#Menu constants
 menu_x_offset = -SCREEN_WIDTH
 menu_speed = 80  # Adjust this for animation speed
 BUTTON_SIZE = 40

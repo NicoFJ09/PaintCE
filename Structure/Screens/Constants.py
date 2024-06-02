@@ -1,7 +1,7 @@
 import pygame
 from var_consts import *
 
-def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, selected_action, display_option, current_color):
+def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color):
     
     
     # Main Options
@@ -101,8 +101,8 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
     
     #======================================================================================= SUBHEADER OPTIONS DISPLAY =======================================================================================
     # Addicional Sprites for sub-header with equal spacing
-    subheader_sprites = [Select, Zoom_in, Zoom_out]
-    subheader_sprite_names = ["Select", "Zoom in", "Zoom out"]
+    subheader_sprites = [Select, Zoom_in, Zoom_out, Zoom_in, Zoom_out]
+    subheader_sprite_names = ["Select", "Zoom in", "Zoom out", "Size up", "Size down"]
     subheader_num_sprites = len(subheader_sprites)
     
     subheader_sprite_size = 30
@@ -143,12 +143,18 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
 
 
     #======================================================================================= VERTICAL TOOLS DISPLAY =======================================================================================
-    
-                                                #======================================= FIRST TOOLS OPTIONS DISPLAY =======================================
 
-    vertical_buttons = [Draw, white_icon, cyan_icon, green_icon, yellow_icon, orange_icon, high_contrast, Rotate_left, Flip_horizontal]
-    vertical_button_names = ["Draw", "", "", "", "", "", "Contrast", "Rotate L.", "Flip h."]
+    
+    #======================================= FIRST TOOLS OPTIONS DISPLAY =======================================
+    if display_mode == "Color":
+        vertical_buttons = [Draw, white_icon, cyan_icon, green_icon, yellow_icon, orange_icon, high_contrast, Rotate_left, Flip_horizontal]
+
+    elif display_mode == "Ascii":
+        vertical_buttons = [Draw, empty_icon, dot_icon, colon_icon, hyphen_icon, equal_icon, high_contrast, Rotate_left, Flip_horizontal]
+
     vertical_button_variables = ["Draw", "White", "Cyan", "Green", "Yellow", "Orange", "Contrast", "Rotate L.", "Flip h."]
+    vertical_button_names = ["Draw", "", "", "", "", "", "Contrast", "Rotate L.", "Flip h."]
+    
     button_size = 30
     hover_size = 60
     vertical_margin = 15  # Espacio entre los botones
@@ -176,9 +182,13 @@ def Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_n
         hover_rects[var] = hover_rect
 
     #======================================= SECOND TOOLS OPTIONS DISPLAY =======================================
-    vertical_buttons = [Eraser, black_icon, red_icon, fucsia_icon, purple_icon, blue_icon, Inverter, Rotate_right, Flip_vertical]
+    if display_mode == "Color":
+        vertical_buttons = [Eraser, black_icon, red_icon, fucsia_icon, purple_icon, blue_icon, Inverter, Rotate_right, Flip_vertical]
+    elif display_mode == "Ascii":
+        vertical_buttons = [Eraser, at_icon, exclamation_icon, ampersand_icon, dollar_icon, percent_icon, Inverter, Rotate_right, Flip_vertical]
     vertical_button_names = ["Eraser", "", "", "", "", "", "Inverter", "Rotate R.", "Flip v."]
     vertical_button_variables = ["Eraser", "Black", "Red","Fucsia" , "Purple", "Blue", "Inverter", "Rotate R.", "Flip v."]
+
     button_size = 30
     hover_size = 60
     vertical_margin = 15  # Espacio entre los botones

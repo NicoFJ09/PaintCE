@@ -70,6 +70,40 @@ orange_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/orange_ic
 fucsia_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/fucsia_icon.png"), (45,45))
 cyan_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/cyan_icon.png"), (45,45))
 purple_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/purple_icon.png"), (45,45))
+
+at_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/at_icon.png"), (45,45))
+empty_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/white_icon.png"), (45,45))
+exclamation_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/exclamation_icon.png"), (45,45))
+colon_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/colon_icon.png"), (45,45))
+percent_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/percent_icon.png"), (45,45))
+hyphen_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/hyphen_icon.png"), (45,45))
+equal_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/equal_icon.png"), (45,45))
+ampersand_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/ampersand_icon.png"), (45,45))
+dot_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/dot_icon.png"), (45,45))
+dollar_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/dollar_icon.png"), (45,45))
+"""
+    0 : " ",
+    1 : ".",
+    2 : ":",
+    3 : "-",
+    4 : "=",
+    5 : "¡",
+    6 : "&",
+    7 : "$",
+    8 : "%",
+    9 : "@"
+
+    "White": 0,
+    "Cyan" : 1,
+    "Green" : 2,
+    "Yellow" : 3,
+    "Orange" : 4,
+    "Red" : 5,
+    "Fucsia" : 6,
+    "Purple": 7,
+    "Blue" : 8,
+    "Black" : 9
+"""
 Draw = pygame.transform.scale(pygame.image.load("Assets/Sprites/Draw.png").convert_alpha(), (45,45))
 Eraser = pygame.transform.scale(pygame.image.load("Assets/Sprites/Eraser.png").convert_alpha(), (45,45))
 Inverter = pygame.transform.scale(pygame.image.load("Assets/Sprites/inverter.png").convert_alpha(), (45,45))
@@ -105,21 +139,23 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option, mouse_held, state_saved 
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved 
         #================================================ SCREEN DISPLAYS ================================================
         
         if current_screen == "INTRO":
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option, orientation_option)
+            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             buttons = Intro_screen(screen, title_font, content_font,  New_file, Open_file, New_file_hovered, Open_file_hovered)
         
         elif current_screen == "CANVAS":
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option, orientation_option)
+            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, selected_action, display_option, current_color)
-        
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
+            #Draw my mouse
+            canvas.draw_outline(screen, mouse_pos, current_size)
+
         elif current_screen == "MENU":
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
@@ -153,6 +189,7 @@ def main():
             
             # CANVAS SCREEN CONTROLS
             elif current_screen == "CANVAS":
+
                 #Click detection
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     
@@ -165,11 +202,11 @@ def main():
                             #Display mode toggle
                             if name == "Mode":
                                 if sprite_names[2] == "Color":
-                                    sprite_names[2] = "Ascii"
-                                    print(sprite_names[2])
+                                    display_mode = "Ascii"
+                                    sprite_names[2] = display_mode
                                 else:
-                                    sprite_names[2] = "Color"
-                                    print(sprite_names[2])
+                                    display_mode = "Color"
+                                    sprite_names[2] = display_mode
 
                             #Screen history management
                             elif name == "Menu":
@@ -184,6 +221,14 @@ def main():
                             elif name == "Redo":
                                 canvas.redo()
 
+                            #Brush size
+                            elif name == "Size up" and current_size<101:
+                                current_size += 2
+                                print(current_size)
+
+                            elif name == "Size down" and current_size>1:
+                                current_size -= 2
+                                print(current_size)
                             #Save selected color
                             elif name in colors:
                                 current_color = name
@@ -207,7 +252,7 @@ def main():
                     #Draw condition
                     if selected_action != "":
                         mouse_held = True
-                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
+                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color, current_size)
 
 
 
@@ -223,7 +268,7 @@ def main():
                     mouse_pos = event.pos
                     if mouse_held:
                         state_saved = True
-                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color)
+                        canvas.draw_on_canvas(mouse_pos, selected_action, current_color, current_size)
 
             # MENU SCREEN CONTROLS
             elif current_screen == "MENU":
