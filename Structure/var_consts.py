@@ -189,7 +189,12 @@ menu_speed = 80  # Adjust this for animation speed
 BUTTON_SIZE = 40
 HOVER_SIZE = 60
 BUTTON_DISTANCE = 128
+IMAGE_DISTANCE = 5
 SHIFT_AMOUNT = 5
+selected_file = None
+files = []
+display_canvas = None
+see_option = ""
 
 #Save management
 CURRENT_FILE = "Untitled"

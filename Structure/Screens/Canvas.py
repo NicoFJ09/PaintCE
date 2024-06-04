@@ -168,3 +168,58 @@ class Canvas_screen:
         with open(file_path, 'w') as f:
             for row in self.canvas_matrix:
                 f.write(' '.join(map(str, row)) + '\n')
+
+    def load_from_file(self, filename):
+        directory = "paintings"
+        file_path = os.path.join(directory, filename)
+        try:
+            with open(file_path, 'r') as f:
+                self.canvas_matrix = [list(map(int, line.split())) for line in f]
+            self.save_state()
+            return "File loaded successfully"
+        except Exception as e:
+            return f"Error loading file: {str(e)}"
+
+    def load_matrix_from_file(self, filename):
+        directory = "paintings"
+        file_path = os.path.join(directory, filename)
+        try:
+            with open(file_path, 'r') as f:
+                matrix = [list(map(int, line.split())) for line in f]
+            return matrix
+        except Exception as e:
+            print(f"Error loading file: {str(e)}")
+            return None
+
+    def draw_static_grid(self, screen, display_mode, matrix):
+        # Calculate the center position based on the screen size and grid size
+        center_x = 3*(SCREEN_WIDTH - self.grid_size * self.square_size) // 4
+        center_y = (SCREEN_HEIGHT - self.grid_size * self.square_size) // 2
+
+        if display_mode == "See matrix" and matrix:
+            ascii_surface = pygame.Surface((self.grid_size * self.square_size, self.grid_size * self.square_size))
+            ascii_surface.fill(WHITE)
+            font = pygame.font.SysFont('Arial', 8)
+            for i in range(self.grid_size):
+                for j in range(self.grid_size):
+                    ascii_code = Ascii_codes[matrix[i][j]]
+                    text_surface = font.render(ascii_code, True, BLACK)
+                    text_rect = text_surface.get_rect(center=(j * self.square_size + self.square_size / 2,
+                                                            i * self.square_size + self.square_size / 2))
+                    ascii_surface.blit(text_surface, text_rect)
+            screen.blit(ascii_surface, (center_x, center_y))
+            return
+
+        for i in range(self.grid_size):
+            for j in range(self.grid_size):
+                if display_mode == "See image":
+                    color_name = colors_codes[matrix[i][j]]
+                    color = colors[color_name]
+                    pygame.draw.rect(screen, color, (center_x + j * self.square_size, center_y + i * self.square_size,
+                                                    self.square_size, self.square_size))
+                    
+        for i in range(self.grid_size + 1):
+            pygame.draw.line(screen, (128, 128, 128), (center_x, center_y + i * self.square_size),
+                             (center_x + self.grid_size * self.square_size, center_y + i * self.square_size), 1)
+            pygame.draw.line(screen, (128, 128, 128), (center_x + i * self.square_size, center_y),
+                             (center_x + i * self.square_size, center_y + self.grid_size * self.square_size), 1)

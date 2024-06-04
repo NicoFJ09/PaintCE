@@ -1,6 +1,7 @@
 #======================================================================================= MAIN IMPORTS =======================================================================================
 import pygame
 import sys
+import os
 sys.path.append('../')
 from var_consts import *
 
@@ -17,7 +18,6 @@ from Screens.Save import Save_screen
 
 from Screens.Save import Replace_screen
 
-from Screens.Confirmation import Confirmation_screen
 
 
 
@@ -111,9 +111,7 @@ See_matrix =pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix.
 Edit_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/Edit_unselected.png").convert_alpha(), (50,50))
 See_image_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_image_unselected.png").convert_alpha(), (50,50))
 See_matrix_unselected = pygame.transform.scale(pygame.image.load("Assets/Sprites/See_matrix_unselected.png").convert_alpha(), (50,50))
-Scrollbar = pygame.transform.scale(pygame.image.load("Assets/Sprites/Scrollbar.png").convert_alpha(), (50,50))
-Scrollbar_pointer = pygame.transform.scale(pygame.image.load("Assets/Sprites/Scrollbar_pointer.png").convert_alpha(), (50,50))
-
+Close = pygame.transform.scale(pygame.image.load("Assets/Sprites/Close.png").convert_alpha(), (60,60))
 #======================================================================================= MAIN FUNCTIONS =======================================================================================
 def handle_quit():
     # This function checks the event queue for quit events and handles them
@@ -129,7 +127,7 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE, selected_file, files, display_canvas, see_option
         #================================================ SCREEN DISPLAYS ================================================
         
         #DISPLAY INTRO OPTIONS 
@@ -154,8 +152,9 @@ def main():
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
                 screen.fill(WHITE)
-                menu_rect_positions = Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, Edit, See_image, See_matrix, Edit_unselected, See_image_unselected, See_matrix_unselected, last_pressed)
-       
+                menu_rect_positions, selected_file= Menu_screen(screen, menu_x_offset, menu_font, Back, New_file_hovered, Open_file_hovered, Edit, See_image, See_matrix, Edit_unselected, See_image_unselected, See_matrix_unselected, Close, last_pressed, selected_file, files, see_option)
+                if see_option !="":
+                    canvas.draw_static_grid(screen, see_option, display_canvas)
         #DISPLAY FILE SAVE
         elif current_screen == "SAVE":
             canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
@@ -190,6 +189,7 @@ def main():
                             elif buttons.index(button) == 1:
                                 current_screen = "MENU"
                                 last_pressed = "Open"
+                                files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
                                 print("Open")
             
             # CANVAS SCREEN CONTROLS
@@ -286,16 +286,40 @@ def main():
                 #Click detection
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = event.pos
-                    #Screen change management
-                    if menu_rect_positions["Back"].collidepoint(mouse_pos):
-                        current_screen = "CANVAS"
-                        last_pressed = "Back"
                     #Image manipulation logic
                     for name, menu_rect in menu_rect_positions.items():
                         if menu_rect.collidepoint(mouse_pos):
-                            last_pressed = name
-                            print(name)
-    
+                            if name == "Back" and see_option =="":
+                                current_screen = "CANVAS"
+                                last_pressed = "Back"     
+                                selected_file = None
+                                files = []
+                            elif name == "New" and see_option =="":
+                                current_screen = "CANVAS"
+                                last_pressed = name
+                                CURRENT_FILE = "Untitled"
+                                update_caption()
+                                selected_file = None
+                                files = []
+                            elif name == "Open" and see_option =="":
+                                last_pressed = name
+                                files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
+                            elif last_pressed == "Open" and name.endswith('.txt') and see_option =="":
+                                selected_file = name
+                                print(f"Selected file: {selected_file}")  # This will print the selected file name
+                            elif name == "Edit" and see_option =="":
+                                canvas.load_from_file(selected_file)
+                                current_screen = "CANVAS"
+                                CURRENT_FILE = selected_file[:-4]
+                                update_caption()
+                            elif name == "See image":
+                                display_canvas = canvas.load_matrix_from_file(selected_file)
+                                see_option = name
+                            elif name == "See matrix":
+                                display_canvas = canvas.load_matrix_from_file(selected_file)
+                                see_option = name
+                            elif name == "Close":
+                                see_option = ""
             # SAVE SCREEN CONTROLS
             elif current_screen == "SAVE":
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -352,8 +376,6 @@ def main():
                         CURRENT_FILE = canvas_name
                         update_caption()
                         current_screen = "CANVAS"
-                else:
-                    pass
 
         pygame.display.update()
         clock.tick(60)

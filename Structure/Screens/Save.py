@@ -31,7 +31,7 @@ def Save_screen(screen, title_font, content_font, input_text, input_active):
     input_area_color = BLACK if input_active else LIGHT_GRAY
     pygame.draw.rect(screen, input_area_color, input_rect, 2)
     
-    entered_text = input_text[:15]  # Limit the input text to 20 characters
+    entered_text = input_text[:30]  # Limit the input text to 20 characters
     entered_text_surface = content_font.render(entered_text, True, DARK_GRAY)
     entered_text_rect = entered_text_surface.get_rect(center=(input_rect.centerx, input_rect.centery - 1))  # Centering the text
     screen.blit(entered_text_surface, entered_text_rect)
