@@ -69,9 +69,6 @@ def Menu_screen(screen, x_offset, menu_font, Back, New, Open, Edit, See_image, S
         #CONDITIONAL FOR SEE MATRIX AND SEE IMAGE
         if button_name == "Edit" and see_option != "":
             pygame.draw.rect(screen, LIGHT_GRAY, hover_rect)  # Keep hover color gray for "Edit" when see_option is not empty
-            image = button_info["unselected_image"]
-            text_color = WHITE
-            text_render = menu_font.render(button_info["text"], True, text_color)
 
         screen.blit(image, button_rect.topleft)
         screen.blit(text_render, text_rect)
@@ -82,10 +79,16 @@ def Menu_screen(screen, x_offset, menu_font, Back, New, Open, Edit, See_image, S
 
     # Display text files in the right section if "Open" was pressed
     if last_pressed == "Open" and files:
+        # Calculate button height and spacing based on the number of files
         file_button_height = BUTTON_SIZE
-        file_button_spacing = (right_section_rect.height - HEADER_HEIGHT) // (len(files) + 1)
-        
-        y_pos = HEADER_HEIGHT/2
+        total_height_needed = (len(files) * file_button_height) + (len(files) - 1) * BUTTON_SIZE
+        remaining_height = right_section_rect.height - HEADER_HEIGHT
+        if total_height_needed <= remaining_height:
+            file_button_spacing = BUTTON_SIZE
+        else:
+            file_button_spacing = remaining_height // len(files)
+
+        y_pos = 0
 
         for filename in files:
             button_rect = pygame.Rect(right_section_rect.left + SHIFT_AMOUNT, y_pos, right_section_rect.width - 2 * SHIFT_AMOUNT, file_button_height)

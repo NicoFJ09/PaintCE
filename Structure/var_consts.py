@@ -154,7 +154,7 @@ current_color = ""
 
 #Select, erase, or draw
 selected_action = ""
-selectable_actions = ["Select", "Eraser", "Draw"]
+selectable_actions = ["Zoom in", "Zoom out", "Eraser", "Draw"]
 
 #Contrast or invert
 display_option = ""
@@ -177,11 +177,14 @@ SUBHEADER_HEIGHT = 40
 CANVAS_SIZE = 960
 
 #To handle the color to Ascii toggle mostly
-sprite_names = ["Save", "Load", "Color"]
+sprite_names = ["Save", "Color"]
 display_mode = "Color"
 
 #Brush/eraser size
 current_size = 1
+
+#Zoom in movement
+Direction = ""
 
 #Menu constants
 menu_x_offset = -SCREEN_WIDTH

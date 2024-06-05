@@ -60,16 +60,15 @@ Open_file_hovered = pygame.transform.scale(pygame.image.load("Assets/Sprites/Ope
 #(HEADER)
 Menu = pygame.transform.scale(pygame.image.load("Assets/Sprites/Menu.png").convert_alpha(), (40,40))
 Save = pygame.transform.scale(pygame.image.load("Assets/Sprites/Save.png").convert_alpha(), (40,40))
-Load = pygame.transform.scale(pygame.image.load("Assets/Sprites/Load.png").convert_alpha(), (40,40))
 Color = pygame.transform.scale(pygame.image.load("Assets/Sprites/Color_mode.png").convert_alpha(), (40,40))
 Ascii = pygame.transform.scale(pygame.image.load("Assets/Sprites/ASCII_mode.png").convert_alpha(), (40,40))
 Undo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Undo.png").convert_alpha(), (40,40))
 Redo = pygame.transform.scale(pygame.image.load("Assets/Sprites/Redo.png").convert_alpha(), (40,40))
 #(SUBHEADER)
-Select = pygame.transform.scale(pygame.image.load("Assets/Sprites/Select.png").convert_alpha(), (40,40))
 Zoom_in = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_in.png").convert_alpha(), (40,40))
 Zoom_out = pygame.transform.scale(pygame.image.load("Assets/Sprites/Zoom_out.png").convert_alpha(), (40,40))
-Size = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size.png").convert_alpha(), (40,40))
+Size_up = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size_up.png").convert_alpha(), (40,40))
+Size_down = pygame.transform.scale(pygame.image.load("Assets/Sprites/Size_down.png").convert_alpha(), (40,40))
 
 #(LATERAL TOOLS)
 black_icon = pygame.transform.scale(pygame.image.load("Assets/Sprites/black_icon.png"), (45,45))
@@ -127,7 +126,7 @@ def main():
     canvas = Canvas_screen()
 
     while RUNNING:
-        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE, selected_file, files, display_canvas, see_option
+        global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, Direction, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE, selected_file, files, display_canvas, see_option
         #================================================ SCREEN DISPLAYS ================================================
         
         #DISPLAY INTRO OPTIONS 
@@ -143,9 +142,9 @@ def main():
             screen.fill(GRAY)
             canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Color, Ascii, sprite_names, Undo, Redo, Zoom_in, Zoom_out, Size_up, Size_down, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
             #Draw my mouse
-            canvas.draw_outline(screen, mouse_pos, current_size)
+            canvas.draw_outline(screen, mouse_pos, current_size, selected_action)
         
         #DISPLAY MENU OPTIONS
         elif current_screen == "MENU":
@@ -159,7 +158,7 @@ def main():
         elif current_screen == "SAVE":
             canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
-            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Load, Color, Ascii, sprite_names, Undo, Redo, Select, Zoom_in, Zoom_out, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
+            constants_rects = Constants_screen(screen, icon_font, Menu, Save, Color, Ascii, sprite_names, Undo, Redo, Zoom_in, Zoom_out, Size_up, Size_down, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
             if response == "File name already exists. Do you want to overwrite it?":
                 cancel_button_rect, save_button_rect = Replace_screen(screen, subtitle_font, content_font)
             else:
@@ -184,6 +183,7 @@ def main():
                             if buttons.index(button) == 0:
                                 current_screen = "CANVAS"
                                 last_pressed = "New"
+                                canvas.__init__()
                                 print("New")
 
                             elif buttons.index(button) == 1:
@@ -206,12 +206,12 @@ def main():
 
                             #Display mode toggle
                             if name == "Mode":
-                                if sprite_names[2] == "Color":
+                                if sprite_names[1] == "Color":
                                     display_mode = "Ascii"
-                                    sprite_names[2] = display_mode
+                                    sprite_names[1] = display_mode
                                 else:
                                     display_mode = "Color"
-                                    sprite_names[2] = display_mode
+                                    sprite_names[1] = display_mode
 
                             #Screen history management
                             elif name == "Menu":
@@ -226,7 +226,7 @@ def main():
                                     current_screen = "SAVE"
                                 else:
                                     canvas.resave_to_file("Paintings", CURRENT_FILE + ".txt")
-                                
+
                             elif name == "Undo":
                                 canvas.undo()
                             elif name == "Redo":
@@ -261,11 +261,15 @@ def main():
                                 orientation_option = name
 
                     #Draw condition
-                    if selected_action != "":
+                    if selected_action == "Eraser" or selected_action == "Draw":
                         mouse_held = True
                         canvas.draw_on_canvas(mouse_pos, selected_action, current_color, current_size)
 
-
+                    elif selected_action == "Zoom in":
+                        canvas.zoom_in()
+                    elif selected_action == "Zoom out":
+                        canvas.zoom_out()
+                        
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     mouse_held = False
@@ -301,6 +305,8 @@ def main():
                                 update_caption()
                                 selected_file = None
                                 files = []
+                                canvas.__init__()
+
                             elif name == "Open" and see_option =="":
                                 last_pressed = name
                                 files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
