@@ -3,7 +3,6 @@ from var_consts import *
 
 def Constants_screen(screen, icon_font, Menu, Save, Color, Ascii, sprite_names, Undo, Redo, Zoom_in, Zoom_out, Size_up, Size_down, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color):
     
-    
     # Main Options
     header_rect = pygame.Rect(0, 0, SCREEN_WIDTH, HEADER_HEIGHT)
     pygame.draw.rect(screen, WHITE, header_rect)

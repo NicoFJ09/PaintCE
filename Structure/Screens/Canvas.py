@@ -4,6 +4,7 @@ import os
 
 
 class Canvas_screen:
+    #Attributes initialization
     def __init__(self):
         self.grid_size = 120
         self.square_size = 6
@@ -26,7 +27,7 @@ class Canvas_screen:
         self.zoom_rect = pygame.Rect(self.start_x, self.start_y, self.grid_size * self.square_size, self.grid_size * self.square_size)
         
 
-       
+    #Draw both the grid pattern in a predetermined white per square and create all conditions to manipulate said grid
     def draw_grid(self, screen, display_option, orientation_option, display_mode):
 
 
@@ -68,7 +69,7 @@ class Canvas_screen:
             self.canvas_matrix = self.flip_vertical(self.canvas_matrix)
 
 
-        # Draw squares or ASCII characters onto the screen
+        # Draw squares for color mode onto the screen
         for i in range(start_i, end_i):
             for j in range(start_j, end_j):
                 if display_mode == "Color":
@@ -91,9 +92,6 @@ class Canvas_screen:
                     screen.blit(self.ascii_surface, (self.start_x, self.start_y))
                     return  # No need to iterate through all cells when rendering ASCII mode
 
-
-
-
         # Draw horizontal lines
         for i in range(self.grid_size + 1):
             pygame.draw.line(screen, GRAY, (self.start_x, self.start_y + i * scaled_square_size),
@@ -104,12 +102,7 @@ class Canvas_screen:
                              (self.start_x + j * scaled_square_size, self.start_y + self.grid_size * scaled_square_size), 1)
 
 
-    def draw_canvas(self, screen, display_option, orientation_option, display_mode):
-        self.draw_grid(screen, display_option, orientation_option, display_mode)
-
-
-
-
+    #To draw and erase on the canvas
     def draw_on_canvas(self, mouse_pos, selected_action, current_color, current_size):
         x, y = mouse_pos
         # Convert mouse coordinates to canvas coordinates
@@ -122,13 +115,13 @@ class Canvas_screen:
             elif selected_action == "Eraser":
                 self.fill_canvas(canvas_x, canvas_y, current_size, 0)  # Set the corresponding cell to 0 (white)
 
-
+    #To manage the color display per pixel
     def fill_canvas(self, start_x, start_y, size, value):
         for i in range(start_y, min(start_y + size, self.grid_size)):
             for j in range(start_x, min(start_x + size, self.grid_size)):
                 self.canvas_matrix[i][j] = value
 
-
+    #Outline that represents the size of the brush
     def draw_outline(self, screen, mouse_pos, current_size, selected_action):
         x, y = mouse_pos
         # Convert mouse coordinates to canvas coordinates
@@ -147,29 +140,24 @@ class Canvas_screen:
                                         outline_size, outline_size)
                 pygame.draw.rect(screen, RED, outline_rect, 1)
 
-
-
-
+    #Variable to manage the undo and redo functions
     def save_state(self):
         # Save the current canvas matrix to the history list
         self.history = self.history[:self.current_state + 1]
         self.history.append([row[:] for row in self.canvas_matrix])
         self.current_state += 1
 
-
+    #Go back on progress
     def undo(self):
         if self.current_state > 0:
             self.current_state -= 1
             self.canvas_matrix = [row[:] for row in self.history[self.current_state]]
 
-
-
-
+    #Advance after going back
     def redo(self):
         if self.current_state < len(self.history) - 1:
             self.current_state += 1
             self.canvas_matrix = [row[:] for row in self.history[self.current_state]]
-
 
     def rotate_left(self, matrix):
         # Rotate the matrix 90 degrees to the left
@@ -191,16 +179,18 @@ class Canvas_screen:
         return matrix[::-1]
 
 
+    #Get a closer view of the grid
     def zoom_in(self):
        
         self.zoom_factor = min(self.zoom_max, self.zoom_factor + 0.1)
         self.update_zoom_rect()
 
-
+    #Go further after getting closer
     def zoom_out(self):
         self.zoom_factor = max(self.zoom_min, self.zoom_factor - 0.1)
         self.update_zoom_rect()
 
+    #Update the grid display
     def update_zoom_rect(self):
         new_width = int(self.grid_size * self.square_size * self.zoom_factor)
         new_height = int(self.grid_size * self.square_size * self.zoom_factor)
@@ -213,7 +203,7 @@ class Canvas_screen:
         )
         self.limit_zoom_rect()
 
-
+    #Establish limits regarding the canvas dimensions
     def limit_zoom_rect(self):
         min_width = self.grid_size * self.square_size
         min_height = self.grid_size * self.square_size
@@ -234,7 +224,7 @@ class Canvas_screen:
         if self.zoom_rect.bottom > self.start_y + self.grid_size * self.square_size:
             self.zoom_rect.bottom = self.start_y + self.grid_size * self.square_size
 
-
+    #Save a new file that was previously untitled
     def save_new_to_file(self, directory, filename):
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -249,7 +239,7 @@ class Canvas_screen:
                 f.write(' '.join(map(str, row)) + '\n')
         return "Successfully saved file"
 
-
+    #Resave the file to update content
     def resave_to_file(self, directory, filename):
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -260,7 +250,7 @@ class Canvas_screen:
             for row in self.canvas_matrix:
                 f.write(' '.join(map(str, row)) + '\n')
 
-
+    #Load a txt from the paintings directory
     def load_from_file(self, filename):
         directory = "paintings"
         file_path = os.path.join(directory, filename)
@@ -272,7 +262,7 @@ class Canvas_screen:
         except Exception as e:
             return f"Error loading file: {str(e)}"
 
-
+    #Pull the matrix from the directory to manage the see image and see matrix functions
     def load_matrix_from_file(self, filename):
         directory = "paintings"
         file_path = os.path.join(directory, filename)
@@ -284,7 +274,7 @@ class Canvas_screen:
             print(f"Error loading file: {str(e)}")
             return None
 
-
+    #Display the matrix after recieving its values through load matrix from file and processing in main
     def draw_static_grid(self, screen, display_mode, matrix):
         # Calculate the center position based on the screen size and grid size
         center_x = 3*(SCREEN_WIDTH - self.grid_size * self.square_size) // 4

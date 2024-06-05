@@ -18,9 +18,6 @@ from Screens.Save import Save_screen
 
 from Screens.Save import Replace_screen
 
-
-
-
 #======================================================================================= GAME SETUP =======================================================================================
 #Library initialization
 pygame.init()
@@ -129,24 +126,24 @@ def main():
         global current_screen, menu_x_offset, last_pressed, current_color, selected_action, display_option, orientation_option,display_mode, current_size, mouse_held, Direction, state_saved, save_option, save_option_replace, input_rect, input_text, input_active, canvas_name, cancel_button_rect, save_button_rect, response, CURRENT_FILE, selected_file, files, display_canvas, see_option
         #================================================ SCREEN DISPLAYS ================================================
         
-        #DISPLAY INTRO OPTIONS 
+        #DISPLAY INTRO OPTIONS
         if current_screen == "INTRO":
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
+            canvas.draw_grid(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             buttons = Intro_screen(screen, title_font, content_font,  New_file, Open_file, New_file_hovered, Open_file_hovered)
         
-        #DISPLAY CANVAS AND CONSTANTS
+        #DISPLAY CANVAS AND CONSTANTS (All main screen tools)
         elif current_screen == "CANVAS":
             response = ""
             screen.fill(GRAY)
-            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
+            canvas.draw_grid(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             constants_rects = Constants_screen(screen, icon_font, Menu, Save, Color, Ascii, sprite_names, Undo, Redo, Zoom_in, Zoom_out, Size_up, Size_down, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
             #Draw my mouse
             canvas.draw_outline(screen, mouse_pos, current_size, selected_action)
         
-        #DISPLAY MENU OPTIONS
+        #DISPLAY MENU OPTIONS (image manipulation display through the txt files, access everything through here)
         elif current_screen == "MENU":
                 if menu_x_offset < 0:
                     menu_x_offset += menu_speed
@@ -156,7 +153,7 @@ def main():
                     canvas.draw_static_grid(screen, see_option, display_canvas)
         #DISPLAY FILE SAVE
         elif current_screen == "SAVE":
-            canvas.draw_canvas(screen, display_option, orientation_option, display_mode)
+            canvas.draw_grid(screen, display_option, orientation_option, display_mode)
             orientation_option = ""
             constants_rects = Constants_screen(screen, icon_font, Menu, Save, Color, Ascii, sprite_names, Undo, Redo, Zoom_in, Zoom_out, Size_up, Size_down, Draw, Eraser, high_contrast, Inverter, Rotate_left, Rotate_right, Flip_horizontal, Flip_vertical, black_icon, white_icon, red_icon, green_icon, blue_icon, yellow_icon, orange_icon, fucsia_icon, cyan_icon, purple_icon, at_icon, empty_icon, exclamation_icon, colon_icon, percent_icon, hyphen_icon, equal_icon, ampersand_icon, dot_icon, dollar_icon, selected_action, display_option, display_mode, current_color)
             if response == "File name already exists. Do you want to overwrite it?":
@@ -230,10 +227,10 @@ def main():
                                 canvas.redo()
 
                             #Brush size
-                            elif name == "Size up" and current_size<101:
+                            elif name == "Size up" and current_size < 101:
                                 current_size += 2
 
-                            elif name == "Size down" and current_size>1:
+                            elif name == "Size down" and current_size > 1:
                                 current_size -= 2
                             #Save selected color
                             elif name in colors:
@@ -288,11 +285,13 @@ def main():
                     #Image manipulation logic
                     for name, menu_rect in menu_rect_positions.items():
                         if menu_rect.collidepoint(mouse_pos):
+                            #Go back to main screen
                             if name == "Back" and see_option =="":
                                 current_screen = "CANVAS"
                                 last_pressed = "Back"     
                                 selected_file = None
                                 files = []
+                            #Create new file and go back to main screen
                             elif name == "New" and see_option =="":
                                 current_screen = "CANVAS"
                                 last_pressed = name
@@ -301,25 +300,30 @@ def main():
                                 selected_file = None
                                 files = []
                                 canvas.__init__()
-
+                            #Open existing files and display options to access said file
                             elif name == "Open" and see_option =="":
                                 last_pressed = name
                                 files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
                             elif last_pressed == "Open" and name.endswith('.txt') and see_option =="":
                                 selected_file = name
+                            #Access a specific file in canvas and edit it
                             elif name == "Edit" and see_option =="":
                                 canvas.load_from_file(selected_file)
                                 current_screen = "CANVAS"
                                 CURRENT_FILE = selected_file[:-4]
                                 update_caption()
+                            #See the colored grid
                             elif name == "See image":
                                 display_canvas = canvas.load_matrix_from_file(selected_file)
                                 see_option = name
+                            #See the Ascii art grid
                             elif name == "See matrix":
                                 display_canvas = canvas.load_matrix_from_file(selected_file)
                                 see_option = name
+                            #Close emerging window for the "see" function
                             elif name == "Close":
                                 see_option = ""
+
             # SAVE SCREEN CONTROLS
             elif current_screen == "SAVE":
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -357,9 +361,11 @@ def main():
                     else:
                         input_text += event.unicode
 
+                
                 if save_option == "Save":
                     canvas_name = input_text
                     response = canvas.save_new_to_file("Paintings", canvas_name + ".txt")
+                    #Manage saving when having to overwrite file
                     if response == "File name already exists. Do you want to overwrite it?":
                         if save_option_replace == "Save":
                             canvas.resave_to_file("Paintings", canvas_name + ".txt")
@@ -369,6 +375,7 @@ def main():
                         else:
                             CURRENT_FILE = "Untitled"
                             update_caption()
+                    #Save a new file
                     else:
                         CURRENT_FILE = canvas_name
                         update_caption()
