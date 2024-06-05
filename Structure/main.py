@@ -184,13 +184,11 @@ def main():
                                 current_screen = "CANVAS"
                                 last_pressed = "New"
                                 canvas.__init__()
-                                print("New")
 
                             elif buttons.index(button) == 1:
                                 current_screen = "MENU"
                                 last_pressed = "Open"
                                 files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
-                                print("Open")
             
             # CANVAS SCREEN CONTROLS
             elif current_screen == "CANVAS":
@@ -202,7 +200,6 @@ def main():
                     for name, hover_rect in constants_rects.items():
                         if hover_rect.collidepoint(mouse_pos):
                             last_pressed = name
-                            print(name)
 
                             #Display mode toggle
                             if name == "Mode":
@@ -235,11 +232,9 @@ def main():
                             #Brush size
                             elif name == "Size up" and current_size<101:
                                 current_size += 2
-                                print(current_size)
 
                             elif name == "Size down" and current_size>1:
                                 current_size -= 2
-                                print(current_size)
                             #Save selected color
                             elif name in colors:
                                 current_color = name
@@ -312,7 +307,6 @@ def main():
                                 files = [f for f in os.listdir('paintings') if f.endswith('.txt')]
                             elif last_pressed == "Open" and name.endswith('.txt') and see_option =="":
                                 selected_file = name
-                                print(f"Selected file: {selected_file}")  # This will print the selected file name
                             elif name == "Edit" and see_option =="":
                                 canvas.load_from_file(selected_file)
                                 current_screen = "CANVAS"
@@ -332,7 +326,6 @@ def main():
                     mouse_pos = event.pos
                     if response == "File name already exists. Do you want to overwrite it?":
                             if cancel_button_rect.collidepoint(event.pos):
-                                print("Cancelled")
                                 input_text = ""
                                 current_screen = "CANVAS"
                                 save_option = ""
@@ -349,7 +342,6 @@ def main():
                             
                             #Check if cancelled
                             if cancel_button_rect.collidepoint(event.pos):
-                                print("Cancelled")
                                 input_text = ""
                                 current_screen = "CANVAS"
                                 save_option = ""
@@ -357,7 +349,6 @@ def main():
                             #Check if saving file
                             elif save_button_rect.collidepoint(event.pos):
                                 save_option = "Save"
-                                print("saved")
                                 
                     #Check for input text
                 elif event.type == pygame.KEYDOWN and input_active:
